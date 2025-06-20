@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import ReactFlow, { Background, Controls, type Node, type Edge } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { getLayoutedElements } from '../utils/layout';
