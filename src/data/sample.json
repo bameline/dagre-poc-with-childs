@@ -1,0 +1,71 @@
+[
+  {
+    "name": "service1",
+    "input": null,
+    "output": "service2"
+  },
+  {
+    "name": "service2",
+    "input": "service1",
+    "output": "service3"
+  },
+  {
+    "name": "service3",
+    "input": "service2",
+    "output": "service4",
+    "children": [
+      {
+        "idStuff": "someId",
+        "AnotherIdStuff": "someOtherId",
+        "childs": [
+          {
+            "name": "childService1",
+            "input": null,
+            "output": "childService2"
+          },
+          {
+            "name": "childService2",
+            "input": "childService1",
+            "output": "childService3"
+          },
+          {
+            "name": "childService3",
+            "input": "childService2",
+            "output": null
+          }
+        ]
+      },
+      {
+        "idStuff": "someId2",
+        "AnotherIdStuff": "someOtherId2",
+        "childs": [
+          {
+            "name": "childService1",
+            "input": null,
+            "output": "childService2"
+          },
+          {
+            "name": "childService2",
+            "input": "childService1",
+            "output": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "service4",
+    "input": "service3",
+    "output": "service5"
+  },
+  {
+    "name": "service5",
+    "input": "service4",
+    "output": "service6"
+  },
+  {
+    "name": "service6",
+    "input": "service5",
+    "output": null
+  }
+]
