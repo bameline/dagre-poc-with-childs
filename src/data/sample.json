@@ -7,7 +7,25 @@
   {
     "name": "service2",
     "input": "service1",
-    "output": "service3"
+    "output": "service3",
+    "children": [
+      {
+        "idStuff": "someIdter",
+        "AnotherIdStuff": "someOtherIder",
+        "childs": [
+          {
+            "name": "service2Child1",
+            "input": null,
+            "output": "service2Child2"
+          },
+          {
+            "name": "service2Child2",
+            "input": "service2Child1",
+            "output": null
+          }
+        ]
+      }
+    ]
   },
   {
     "name": "service3",
@@ -19,18 +37,18 @@
         "AnotherIdStuff": "someOtherId",
         "childs": [
           {
-            "name": "childService1",
+            "name": "service3Child1",
             "input": null,
-            "output": "childService2"
+            "output": "service3Child2"
           },
           {
-            "name": "childService2",
-            "input": "childService1",
-            "output": "childService3"
+            "name": "service3Child2",
+            "input": "service3Child1",
+            "output": "service3Child3"
           },
           {
-            "name": "childService3",
-            "input": "childService2",
+            "name": "service3Child3",
+            "input": "service3Child2",
             "output": null
           }
         ]
@@ -40,13 +58,13 @@
         "AnotherIdStuff": "someOtherId2",
         "childs": [
           {
-            "name": "childService1",
+            "name": "service3Child1",
             "input": null,
-            "output": "childService2"
+            "output": "service3Child2"
           },
           {
-            "name": "childService2",
-            "input": "childService1",
+            "name": "service3Child2",
+            "input": "service3Child1",
             "output": null
           }
         ]
@@ -56,7 +74,46 @@
   {
     "name": "service4",
     "input": "service3",
-    "output": "service5"
+    "output": "service5",
+    "children": [
+      {
+        "idStuff": "someIdbis",
+        "AnotherIdStuff": "someOtherIdbis",
+        "childs": [
+          {
+            "name": "service4Child1",
+            "input": null,
+            "output": "service4Child2"
+          },
+          {
+            "name": "service4Child2",
+            "input": "service4Child1",
+            "output": "service4Child3"
+          }
+        ]
+      },
+      {
+        "idStuff": "someId2bis",
+        "AnotherIdStuff": "someOtherId2bis",
+        "childs": [
+          {
+            "name": "service4Child1",
+            "input": null,
+            "output": "service4Child2"
+          },
+          {
+            "name": "service4Child2",
+            "input": "service4Child1",
+            "output": "service4Child3"
+          },
+          {
+            "name": "service4Child3",
+            "input": "service4Child2",
+            "output": null
+          }
+        ]
+      }
+    ]
   },
   {
     "name": "service5",

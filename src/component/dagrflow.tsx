@@ -1,5 +1,6 @@
+import { useEffect, useRef } from 'react';
 import { useMemo, useState } from 'react';
-import ReactFlow, { Background, Controls, type Node, type Edge } from 'reactflow';
+import ReactFlow, { Background, Controls, type Node, type Edge, useReactFlow } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { getLayoutedElements } from '../utils/layout';
 import { parseServiceDAG } from '../utils/parseService';
@@ -11,12 +12,13 @@ type SelectedChildDAG = {
   nodes: Node[];
   edges: Edge[];
 };
+const childFlowRefs = useRef<(ReturnType<typeof useReactFlow> | null)[]>([]);
 
 const [selectedChildren, setSelectedChildren] = useState<SelectedChildDAG[]>([]);
 const [activeParentNode, setActiveParentNode] = useState<string | null>(null);
 
   const { nodes, edges } = useMemo(() => getLayoutedElements(parsed.nodes, parsed.edges), [parsed]);
-
+  
   // On click on element if leement has childs display them
   const handleNodeClick = (_: unknown, node: Node) => {
     // hide existing child graphs
@@ -59,6 +61,17 @@ const [activeParentNode, setActiveParentNode] = useState<string | null>(null);
     }
   };
 
+  // Tricks on childs change to refit view
+  useEffect(() => {
+  childFlowRefs.current.forEach((instance) => {
+    // Seems to only work with a timeout for some reason
+    setTimeout(() => {
+    instance?.fitView();
+     }, 5);
+    console.log("fit view")
+  });
+}, [selectedChildren]);
+
   return (
     <div style={{ width: '100%', padding: '1rem' }}>
       <h2>Main Service DAG</h2>
@@ -74,7 +87,11 @@ const [activeParentNode, setActiveParentNode] = useState<string | null>(null);
           <h2>Children DAG(s)</h2>
           {selectedChildren.map((group, idx) => (
             <div key={idx} style={{ height: 100, marginTop: '1rem', border: '1px solid #aaa' }}>
-              <ReactFlow nodes={group.nodes} edges={group.edges} fitView>
+              <ReactFlow nodes={group.nodes} edges={group.edges} fitView
+              onInit={(instance) => {
+        childFlowRefs.current[idx] = instance;
+        instance.fitView();
+      }}>
                 <Background />
                 <Controls />
               </ReactFlow>
