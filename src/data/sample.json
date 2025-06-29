@@ -110,6 +110,16 @@
             "name": "service4Child3",
             "input": "service4Child2",
             "output": null
+          },
+          {
+            "name": "service4Child2",
+            "input": "service4Child1",
+            "output": "service4Child3"
+          },
+          {
+            "name": "service4Child3",
+            "input": "service4Child2",
+            "output": null
           }
         ]
       }
