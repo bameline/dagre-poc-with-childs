@@ -5,7 +5,7 @@ import { getLayoutedElements } from '../utils/layout';
 import { parseServiceDAG } from '../utils/parseService';
 import sampleData from '../data/sample.json';
 import { v4 as uuidv4 } from 'uuid';
-import { Search, ArrowRight } from 'lucide-react';
+import { Search, ArrowRight,CheckCircle, XCircle, Clock  } from 'lucide-react';
 
 export default function DAGFlow() {
   // Create multiple root DAGs with UUIDs only
@@ -29,9 +29,21 @@ export default function DAGFlow() {
     });
   }, []);
 
+  const [selectedType, setSelectedType] = useState<string>("idType1");
+
+  const toggleOptions = [
+    { id: "idType1", label: "idType1" },
+    { id: "idType2", label: "idType2" },
+    { id: "idType3", label: "idType3" },
+    { id: "idType4", label: "idType4" },
+    { id: "idType5", label: "idType5" },
+    { id: "idType6", label: "idType6" },
+    { id: "idType7", label: "idType7" },
+  ];
+
   const [activeDAGId, setActiveDAGId] = useState(dagList[0].id);
   const [searchText] = useState('');
-  const [breadcrumb, setBreadcrumb] = useState<string[]>([activeDAGId]);
+  const [breadcrumb, setBreadcrumb] = useState<string[]>(['Root']);
   const [activeGraph, setActiveGraph] = useState<{ nodes: Node[]; edges: Edge[] }>({
     nodes: dagList[0].nodes,
     edges: dagList[0].edges,
@@ -58,25 +70,25 @@ useEffect(() => {
 // Updated handleNodeClick using parseServiceDAG structure
 const handleNodeClick = (_: unknown, node: Node) => {
   const nodeData = node.data;
-
+  console.log(node)
   // Check if this node has children (child DAGs)
   if (nodeData?.children?.length) {
     // For simplicity, take the first child group (you could allow multiple)
     const childGroup = nodeData.children[0];
-    console.log(childGroup)
-      console.log(nodeData.children)
     // Use the precomputed nodes and edges directly
     setActiveGraph({ nodes: childGroup.nodes, edges: childGroup.edges });
     setIsInChild(true);
-    setBreadcrumb([activeDAGId, node.data.label]);
+    setBreadcrumb(['Root', node.data.label]);
     setSelectedNode(null);
   } else if (isInChild) {
     // Node clicked in child graph → show table
     setSelectedNode(node);
   }
 };
-
-
+const getRandomStatus = () => {
+  const statuses = ['success', 'error', 'waiting'];
+  return statuses[Math.floor(Math.random() * statuses.length)];
+};
 
   // Breadcrumb click
   const handleBreadcrumbClick = (levelIndex: number) => {
@@ -84,10 +96,12 @@ const handleNodeClick = (_: unknown, node: Node) => {
       setActiveGraph({ nodes: activeDAG.nodes, edges: activeDAG.edges });
       setIsInChild(false);
       setBreadcrumb(
-        [activeDAGId]);
+        ['Root']);
       setSelectedNode(null);
     }
   };
+
+  
 
   useEffect(() => {
     setTimeout(() => childFlowRef.current?.fitView(), 20);
@@ -137,6 +151,38 @@ style={{
     gap: '1rem',
   }}
         >
+{/* Toggle group */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3, 1fr)",
+          gap: "0.4rem",
+        }}
+      >
+        {toggleOptions.map((opt) => (
+          <button
+            key={opt.id}
+            onClick={() => setSelectedType(opt.id)}
+            style={{
+              background:
+                selectedType === opt.id ? "#9f7aea" : "rgba(255,255,255,0.05)",
+              color: selectedType === opt.id ? "#fff" : "#ccc",
+              border:
+                selectedType === opt.id
+                  ? "1px solid #b794f4"
+                  : "1px solid #3c3c5e",
+              borderRadius: 6,
+              padding: "0.35rem 0.25rem",
+              fontSize: "0.75rem",
+              fontWeight: 500,
+              cursor: "pointer",
+              transition: "all 0.2s",
+            }}
+          >
+            {opt.label}
+          </button>
+        ))}
+      </div>
           {/* Search */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <textarea
@@ -174,7 +220,15 @@ style={{
               <Search size={16} />
             </button>
           </div>
-
+ {/* --- Trait de séparation --- */}
+  <div
+    style={{
+      width: '80%',
+      height: '1px',
+      background: 'linear-gradient(to right, transparent, #5e5e8f, transparent)',
+      margin: '0.5rem auto',
+    }}
+  />
           {/* DAG cards: only UUIDs */}
           <div
             style={{
@@ -185,31 +239,62 @@ style={{
               flex: 1,
             }}
           >
-            {filteredDAGs.map((dag) => (
-              <div
-                key={dag.id}
-                onClick={() => {
-                  setActiveDAGId(dag.id);
-                  setActiveGraph({ nodes: dag.nodes, edges: dag.edges });
-                  setBreadcrumb([activeDAGId]);
-                  setIsInChild(false);
-                  setSelectedNode(null);
-                }}
-                style={{
-                  cursor: 'pointer',
-          padding: '0.75rem',
-          borderRadius: 8,
-          border: '1px solid #5e5e8f',
-          background: dag.id === activeDAGId ? '#9f7aea' : '#3c3c5e',
-          color: dag.id === activeDAGId ? '#fff' : '#ccc',
-          fontWeight: dag.id === activeDAGId ? 600 : 400,
-          textAlign: 'center',
-          transition: 'all 0.2s',
-                }}
-              >
-                {dag.id}
-              </div>
-            ))}
+{filteredDAGs.map((dag) => {
+  const worstStatus = getRandomStatus();
+
+  let borderColor = '#5e5e8f';
+  let StatusIcon = <CheckCircle size={16} color="#4ade80" />; // default success
+
+  if (worstStatus === 'waiting') {
+   // bgColor = '#facc15';
+    borderColor = '#ca8a04';
+    StatusIcon = <Clock size={16} color="#facc15" />;
+  } else if (worstStatus === 'error') {
+    //bgColor = '#b91c1c';
+    borderColor = '#7f1d1d';
+    StatusIcon = <XCircle size={16} color="#f87171" />;
+  } else if (worstStatus === 'success') {
+    //bgColor = '#14532d';
+    borderColor = '#15803d';
+    StatusIcon = <CheckCircle size={16} color="#4ade80" />;
+  }
+
+  const isActive = dag.id === activeDAGId;
+
+  return (
+    <div
+      key={dag.id}
+      onClick={() => {
+        setActiveDAGId(dag.id);
+        setActiveGraph({ nodes: dag.nodes, edges: dag.edges });
+        setBreadcrumb(['Root']);
+        setIsInChild(false);
+        setSelectedNode(null);
+      }}
+      style={{
+        cursor: 'pointer',
+        padding: '0.75rem',
+        borderRadius: 8,
+        border: `1px solid ${borderColor}`,
+        background: isActive ? '#9f7aea' : '#2a2a3f',
+        color: '#fff',
+        fontWeight: isActive ? 600 : 400,
+        textAlign: 'center',
+        transition: 'all 0.2s',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+      }}
+    >
+      <span style={{ fontSize: '0.8rem', wordBreak: 'break-all' }}>{dag.id}</span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+        {StatusIcon}
+      </div>
+    </div>
+  );
+})}
+
+
           </div>
         </aside>
 
@@ -258,20 +343,64 @@ style={{
               }}
             >
              <ReactFlow
-  nodes={activeGraph.nodes.map((node) => ({
+nodes={activeGraph.nodes.map((node) => {
+  const status = node.data?.status;
+  let StatusIcon = null;
+  let statusColor = '#ccc';
+
+  if (status === 'success') {
+    StatusIcon = <CheckCircle size={16} color="#4ade80" />;
+    statusColor = '#4ade80';
+  } else if (status === 'error') {
+    StatusIcon = <XCircle size={16} color="#f87171" />;
+    statusColor = '#f87171';
+  } else if (status === 'waiting') {
+    StatusIcon = <Clock size={16} color="#facc15" />;
+    statusColor = '#facc15';
+  }
+
+  return {
     ...node,
+    data: {
+      ...node.data,
+      label: (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          {StatusIcon}
+          <span>{node.data.label}</span>
+          {node.data.children && node.data.children.length>0 && (
+            <span
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                background: 'rgba(255,255,255,0.15)',
+                borderRadius: '8px',
+                padding: '2px 6px',
+                fontSize: '0.8rem',
+              }}
+            >
+              <Search size={14} />
+              {node.data.children.length}
+            </span>)}
+        </div>
+      ),
+    },
     style: {
-      background: selectedNode?.id === node.id ? '#9f7aea' : '#6b46c1', // active node
+      background: selectedNode?.id === node.id ? '#9f7aea' : '#3b3b54',
       color: '#fff',
-      border: selectedNode?.id === node.id ? '2px solid #d6bcfa' : '1px solid #9f7aea',
+      border: `2px solid ${statusColor}`,
       borderRadius: 8,
       padding: 10,
-      boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
-      transition: 'all 0.2s',
+      boxShadow: selectedNode?.id === node.id
+        ? '0 0 8px rgba(159,122,234,0.8)'
+        : '0 2px 6px rgba(0,0,0,0.4)',
+      transition: 'all 0.2s ease',
+      cursor: 'pointer',
     },
-    // optional: hover effect using className + CSS
     className: 'reactflow-node-dark',
-  }))}
+  };
+})}
+
   edges={activeGraph.edges.map((edge) => ({
     ...edge,
     style: { stroke: '#9f7aea', strokeWidth: 2 },

@@ -1,4 +1,4 @@
-import { type Node, type Edge, MarkerType } from 'reactflow';
+import { type Edge, MarkerType, type Node } from 'reactflow';
 import { v4 as uuidv4 } from 'uuid';
 import { getLayoutedElements } from './layout';
 
@@ -20,6 +20,17 @@ export interface ParsedDAG {
   nodes: Node[];
   edges: Edge[];
   childrenMap: Record<string, { nodes: Node[]; edges: Edge[]; rawData: ServiceNode[] }[]>;
+}
+
+function addRandomStatus(node: Node) {
+  const statuses = ['success', 'error', 'waiting'];
+  node.data.status = statuses[Math.floor(Math.random() * statuses.length)];
+  if (node.data.children) {
+
+  node.data.children.forEach((c:ParsedDAG) => c.nodes.forEach(addRandomStatus));
+    console.log("in")
+  }
+  return node;
 }
 
 export function parseServiceDAG(data: ServiceNode[]): ParsedDAG {
@@ -122,5 +133,9 @@ export function parseServiceDAG(data: ServiceNode[]): ParsedDAG {
     }
   });
 
+  nodes.forEach((node) =>{
+              addRandomStatus(node)
+  })
+  console.log(nodes)
   return { nodes, edges, childrenMap };
 }
