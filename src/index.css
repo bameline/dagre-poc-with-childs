@@ -12,7 +12,10 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
+.reactflow-node-dark:hover {
+  background-color: #805ad5 !important;
+  border-color: #d6bcfa !important;
+}
 a {
   font-weight: 500;
   color: #646cff;

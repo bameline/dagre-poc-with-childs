@@ -1,26 +1,26 @@
 [
   {
-    "name": "service1",
+    "name": "project1",
     "input": null,
-    "output": "service2"
+    "output": "project2"
   },
   {
-    "name": "service2",
-    "input": "service1",
-    "output": "service3",
+    "name": "project2",
+    "input": "project1",
+    "output": "project3",
     "children": [
       {
         "idStuff": "someIdter",
         "AnotherIdStuff": "someOtherIder",
         "childs": [
           {
-            "name": "service2Child1",
+            "name": "application1",
             "input": null,
-            "output": "service2Child2"
+            "output": "application2"
           },
           {
-            "name": "service2Child2",
-            "input": "service2Child1",
+            "name": "application2",
+            "input": "application1",
             "output": null
           }
         ]
@@ -28,27 +28,27 @@
     ]
   },
   {
-    "name": "service3",
-    "input": "service2",
-    "output": "service4",
+    "name": "project3",
+    "input": "project2",
+    "output": "project4",
     "children": [
       {
         "idStuff": "someId",
         "AnotherIdStuff": "someOtherId",
         "childs": [
           {
-            "name": "service3Child1",
+            "name": "application1",
             "input": null,
-            "output": "service3Child2"
+            "output": "application2"
           },
           {
-            "name": "service3Child2",
-            "input": "service3Child1",
-            "output": "service3Child3"
+            "name": "application2",
+            "input": "application1",
+            "output": "application3"
           },
           {
-            "name": "service3Child3",
-            "input": "service3Child2",
+            "name": "application3",
+            "input": "application2",
             "output": null
           }
         ]
@@ -58,13 +58,13 @@
         "AnotherIdStuff": "someOtherId2",
         "childs": [
           {
-            "name": "service3Child1",
+            "name": "application1",
             "input": null,
-            "output": "service3Child2"
+            "output": "application2"
           },
           {
-            "name": "service3Child2",
-            "input": "service3Child1",
+            "name": "application2",
+            "input": "application1",
             "output": null
           }
         ]
@@ -72,23 +72,23 @@
     ]
   },
   {
-    "name": "service4",
-    "input": "service3",
-    "output": "service5",
+    "name": "project4",
+    "input": "project3",
+    "output": "project5",
     "children": [
       {
         "idStuff": "someIdbis",
         "AnotherIdStuff": "someOtherIdbis",
         "childs": [
           {
-            "name": "service4Child1",
+            "name": "application1",
             "input": null,
-            "output": "service4Child2"
+            "output": "application2"
           },
           {
-            "name": "service4Child2",
-            "input": "service4Child1",
-            "output": "service4Child3"
+            "name": "application2",
+            "input": "application1",
+            "output": "application3"
           }
         ]
       },
@@ -97,28 +97,28 @@
         "AnotherIdStuff": "someOtherId2bis",
         "childs": [
           {
-            "name": "service4Child1",
+            "name": "application1",
             "input": null,
-            "output": "service4Child2"
+            "output": "application2"
           },
           {
-            "name": "service4Child2",
-            "input": "service4Child1",
-            "output": "service4Child3"
+            "name": "application2",
+            "input": "application1",
+            "output": "application3"
           },
           {
-            "name": "service4Child3",
-            "input": "service4Child2",
+            "name": "application3",
+            "input": "application2",
             "output": null
           },
           {
-            "name": "service4Child2",
-            "input": "service4Child1",
-            "output": "service4Child3"
+            "name": "application2",
+            "input": "application1",
+            "output": "application3"
           },
           {
-            "name": "service4Child3",
-            "input": "service4Child2",
+            "name": "application3",
+            "input": "application2",
             "output": null
           }
         ]
@@ -126,13 +126,13 @@
     ]
   },
   {
-    "name": "service5",
-    "input": "service4",
-    "output": "service6"
+    "name": "project5",
+    "input": "project4",
+    "output": "project6"
   },
   {
-    "name": "service6",
-    "input": "service5",
+    "name": "project6",
+    "input": "project5",
     "output": null
   }
 ]
