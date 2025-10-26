@@ -1,4 +1,4 @@
-import type { Node, Edge } from 'reactflow';
+import { type Node, type Edge, MarkerType } from 'reactflow';
 import { v4 as uuidv4 } from 'uuid';
 import { getLayoutedElements } from './layout';
 
@@ -43,12 +43,15 @@ export function parseServiceDAG(data: ServiceNode[]): ParsedDAG {
   });
 
   // Step 2: Create edges for root nodes and process children
-  data.forEach((node, idx) => {
+  data.forEach((node) => {
     // Root edges
     if (node.output && nameToUUIDMap.has(node.output)) {
       edges.push({
         id: `e-${node.uuid}-${nameToUUIDMap.get(node.output)}`,
         source: node.uuid!,
+        animated: true,
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#d6bcfa' },
+    style: { stroke: '#9f7aea', strokeWidth: 2, strokeDasharray: '5 5' },
         target: nameToUUIDMap.get(node.output)!,
       });
     }
@@ -91,6 +94,9 @@ export function parseServiceDAG(data: ServiceNode[]): ParsedDAG {
               id: `e-${childNode.uuid}-${childNode.input}`,
               source: childNode.input,
               target: childNode.uuid!,
+              animated: true,
+    markerEnd: {  type: MarkerType.ArrowClosed, color: '#d6bcfa' },
+    style: { stroke: '#9f7aea', strokeWidth: 2, strokeDasharray: '5 5' },
             });
           }
         });

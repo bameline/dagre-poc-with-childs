@@ -14,9 +14,9 @@ export default function DAGFlow() {
       const parsed = parseServiceDAG(structuredClone(sampleData));
 
       // Label root nodes as Project1, Project2, ...
-      parsed.nodes.forEach((node, nIdx) => {
-        node.label = `Project${nIdx + 1}`;
-      });
+      // parsed.nodes.forEach((node, nIdx) => {
+      //   node.data.label = `Project${nIdx + 1}`;
+      // });
 
       const { nodes, edges } = getLayoutedElements(parsed.nodes, parsed.edges);
 
@@ -30,8 +30,8 @@ export default function DAGFlow() {
   }, []);
 
   const [activeDAGId, setActiveDAGId] = useState(dagList[0].id);
-  const [searchText, setSearchText] = useState('');
-  const [breadcrumb, setBreadcrumb] = useState<string[]>(['Racine']);
+  const [searchText] = useState('');
+  const [breadcrumb, setBreadcrumb] = useState<string[]>([activeDAGId]);
   const [activeGraph, setActiveGraph] = useState<{ nodes: Node[]; edges: Edge[] }>({
     nodes: dagList[0].nodes,
     edges: dagList[0].edges,
@@ -47,16 +47,6 @@ export default function DAGFlow() {
 
   const activeDAG = dagList.find((d) => d.id === activeDAGId)!;
 
-// Helper to generate nodes/edges for a given DAG structure
-function buildGraphFromData(data: any[], isChild = false) {
-  return data.map((item, idx) => ({
-    id: isChild ? `app-${idx}` : `proj-${idx}`,
-    label: isChild ? `Application${idx + 1}` : `Project${idx + 1}`,
-    data: item,
-    position: { x: idx * 200, y: 0 },
-  }));
-}
-
 // Recenter graph when a node is selected (table appears) or deselected
 useEffect(() => {
   setTimeout(() => {
@@ -64,22 +54,6 @@ useEffect(() => {
   }, 50);
 }, [selectedNode]);
 
-function buildEdges(data: any[], isChild = false) {
-  const edges: Edge[] = [];
-  data.forEach((item, idx) => {
-    if (item.output) {
-      const targetIdx = data.findIndex((d) => d.name === item.output);
-      if (targetIdx >= 0) {
-        edges.push({
-          id: `${isChild ? 'app' : 'proj'}-edge-${idx}-${targetIdx}`,
-          source: isChild ? `app-${idx}` : `proj-${idx}`,
-          target: isChild ? `app-${targetIdx}` : `proj-${targetIdx}`,
-        });
-      }
-    }
-  });
-  return edges;
-}
 
 // Updated handleNodeClick using parseServiceDAG structure
 const handleNodeClick = (_: unknown, node: Node) => {
@@ -94,7 +68,7 @@ const handleNodeClick = (_: unknown, node: Node) => {
     // Use the precomputed nodes and edges directly
     setActiveGraph({ nodes: childGroup.nodes, edges: childGroup.edges });
     setIsInChild(true);
-    setBreadcrumb(['Racine', node.label]);
+    setBreadcrumb([activeDAGId, node.data.label]);
     setSelectedNode(null);
   } else if (isInChild) {
     // Node clicked in child graph → show table
@@ -109,7 +83,8 @@ const handleNodeClick = (_: unknown, node: Node) => {
     if (levelIndex === 0) {
       setActiveGraph({ nodes: activeDAG.nodes, edges: activeDAG.edges });
       setIsInChild(false);
-      setBreadcrumb(['Racine']);
+      setBreadcrumb(
+        [activeDAGId]);
       setSelectedNode(null);
     }
   };
@@ -216,7 +191,7 @@ style={{
                 onClick={() => {
                   setActiveDAGId(dag.id);
                   setActiveGraph({ nodes: dag.nodes, edges: dag.edges });
-                  setBreadcrumb(['Racine']);
+                  setBreadcrumb([activeDAGId]);
                   setIsInChild(false);
                   setSelectedNode(null);
                 }}
@@ -318,7 +293,7 @@ style={{
             {/* Node table */}
 {selectedNode && (
   <div style={{ flex: 0.5, overflowY: 'auto', padding: '1rem', background: '#1e1e2f' }}>
-    <h3 style={{ marginBottom: '0.5rem', color: '#fff' }}>Details for node: {selectedNode.label}</h3>
+    <h3 style={{ marginBottom: '0.5rem', color: '#fff' }}>Details for node: {selectedNode.data.label}</h3>
     <table
       style={{
         width: '100%',
